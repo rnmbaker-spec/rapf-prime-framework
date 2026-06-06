@@ -1,0 +1,39 @@
+# Quadratic-Cubic Transition Verification Plan
+
+## Objective
+Verify polynomial score mechanics transition from quadratic to cubic regime around 140M range, confirming framework validity through L∞-D margin closure.
+
+## Methodology
+1. **Scale Analysis**
+   - Calculate S(X) = (log X / 3)^3 at X = 140M
+   - log(140,000,000) ≈ 18.05 → S(X) ≈ (18.05/3)^3 ≈ 6.02³ ≈ 218
+   - Confirm X/S(X) ratio maintains protocol-scoped validity
+
+2. **Polynomial Score Mechanics**
+   - For candidates u = (h, σ) ∈ U_X with X ≈ 140M:
+     - Calculate ω_S(n(u)) = distinct prime factors ≤ 218
+     - Compute Score_marg(u) = Σ_{j≥3} (-1)^j · C(ω_S,j)/S^j
+     - Compare with deterministic envelope E_marg(X) ≤ 5000/(log X)^6
+
+3. **Error Channel Validation**
+   - Structural error: 0 (from L∞-A closure at X ≥ 242)
+   - Margin error: ≤ 5000/(log 140M)^6 ≈ 5000/(18.05)^6 ≈ 5000/33,744,073 ≈ 0.000148
+   - Protocol tolerance: 1/log X ≈ 0.0554
+   - Confirm E_marg(X) << protocol tolerance
+
+4. **Computational Check**
+   - Run ω_S(n) counts for X = 140,000,000 ± α(X)
+   - α(X) = log X = 18.05 → test h = 1 to 18
+   - For each candidate:
+     - n(u) = 140M ± h
+     - Count prime factors ≤ 218
+     - Compute Score_marg(u) and verify envelope bound
+
+## Artifact Map
+- Connects to L∞-D margin closure proof at daily/2026-05-22.md
+- Builds on structural closure verification in linf_A_structural_closure_v1.md
+- Extends certificate analysis despite missing cert_v5.0.md
+
+## Status: Implementation in progress
+
+## Path: ./research-pathways.md#quadratic-cubic-transition-verification

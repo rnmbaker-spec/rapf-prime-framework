@@ -1,0 +1,19 @@
+# Generated data files (not source)
+*.log
+*.json
+n8_run_v3.log
+n8_results_v2.json
+n9_theta_results.json
+
+# Compiled binaries
+n8_twin_sieve
+n8_twin_sieve_v2
+
+# Cache directories
+__pycache__/
+*.pyc
+
+# Drafts and backups
+*~
+*.bak
+*.orig

@@ -1,0 +1,9 @@
+\contentsline {section}{\numberline {1}Introduction}{3}{section.1}%
+\contentsline {section}{\numberline {2}The Hyperbolic Gap Manifold}{3}{section.2}%
+\contentsline {section}{\numberline {3}Gap Regimes via Geodesic Deviation}{4}{section.3}%
+\contentsline {section}{\numberline {4}Lambda from Entropy Maximization}{5}{section.4}%
+\contentsline {section}{\numberline {5}Zeta Zero Connection via GUE Universality}{6}{section.5}%
+\contentsline {section}{\numberline {6}Fisher Information Metric at $r=2$}{7}{section.6}%
+\contentsline {section}{\numberline {7}Structural Coherence and Asymptotic Implications}{8}{section.7}%
+\contentsline {section}{\numberline {8}Computational Verification}{9}{section.8}%
+\contentsline {section}{\numberline {9}Conclusion}{10}{section.9}%

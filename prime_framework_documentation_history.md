@@ -1,0 +1,3 @@
+- prime_framework_20260527.tar.gz (created 2026-05-27 12:03) 513K - Complete backup of current RAPF framework development state
+- RAPF_framework.tar.gz (created 2026-05-27 11:58) 135K - Finalized framework documentation package sent to Telegram
+- prime_framework_new.tex (created 2026-05-27 09:54) 111K - Merged LaTeX file with all components

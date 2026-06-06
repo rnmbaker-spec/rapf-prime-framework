@@ -1,0 +1,23 @@
+## Extended BR3 Coefficient Forcing (2026-05-26)
+
+**Quartic Identity Forcing:**
+For degree-4 polynomial terms $ p(x) = ax^4 + bx^3 + cx^2 + dx + e $, the coefficient identities hold:
+1. $ a^\text{(forced)} = -\sum_{i=1}^\infty \frac{\chi_i^{(4)}}{4!} \cdot \frac{\partial^4}{\partial x^4} \log \mathcal{W}_{\!X/4} $ 
+2. $ b^\text{(forced)} = +\sum_{i=1}^\infty \frac{\chi_i^{(3)}}{3!} \cdot \frac{\partial^3}{\partial x^3} \log \mathcal{W}_{\!X/3} $
+3. Recursive structure maintains sign alternation through degree
+
+**Proof Structure:**
+1. Cumulant expansion to degree-4 residuals
+2. Coefficient inheritance through prime product constraints
+3. Weight function expansion to $ \partial^4/\partial x^4 $ term
+
+**Verification Bridge:**
+- Matches degree-4 component of residue domination $ G_X(t) $ 
+- Connects to [C₂ Constant Derivation Bridge](daily/2026-05-24.md)
+- Supports L∞-D margin theorem under quartic analysis
+
+**Artifact Integration:**
+- File: /home/rebecca/research-pathways.md
+  - Verification pathway section updated to show quartic regime completion
+- File: artifact_map.md
+  - BR3 coefficient forcing extension explicitly linked for quartic analysis
