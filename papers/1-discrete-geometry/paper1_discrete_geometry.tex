@@ -328,7 +328,7 @@ The discrete information-geometric framework opens several concrete research dir
     
     \item \textbf{Refined PMF with Maier Modulation:} Develop a multi-parameter lattice PMF $P(k) = M(k) \cdot (e^{6/\lambda}-1)e^{-6k/\lambda}$ where $M(k)$ captures Maier-style density oscillations alongside modular correlations from mod-30 and mod-210 sieve layers. Following Brent (2014), future work will quantify exactly how the twin-prime sieving operation dampens these local fluctuations compared to the base prime distribution.
     
-    \item \textbf{Cross-tuple comparison:} Apply the same discrete Fisher framework to other prime constellations (cousin primes, sexy primes, prime triplets) to test whether the lattice structure and information scaling generalize.
+    \item \textbf{Cross-tuple comparison:} Apply the same discrete Fisher framework to other prime constellations (cousin primes, sexy primes, prime triplets) to test whether the lattice structure and information scaling generalize. The validated sieve code is open-sourced and available at \url{https://github.com/rnmbaker-spec/rapf-prime-framework}.
     
     \item \textbf{Information-theoretic bounds:} The Cram\'{e}r--Rao lower bound states that any unbiased estimator $\tilde{\lambda}$ of the scale parameter satisfies $\text{Var}(\tilde{\lambda}) \geq 1/I(\lambda(X))$. At $X = 10^9$, this gives $\text{Var}(\tilde{\lambda}) \geq 85{,}276$, corresponding to a standard deviation floor of $\sigma \geq 292$ --- exactly one twin-to-twin gap. This means the intrinsic information structure of the modulo-6 lattice places a hard statistical limit: no estimator can resolve deviations from Hardy--Littlewood predictions at a scale finer than a single inter-twin spacing. At $X = 10^{15}$, the bound relaxes to $\sigma \geq 903$, meaning that even at extreme scales, the information geometry permits substantial uncertainty in $\lambda$ estimators, consistent with Maier-style fluctuations.
 \end{enumerate}
@@ -345,7 +345,7 @@ This discrete geometric foundation supplies the structural setting in which the 
 We argue that negative results, documented with validated data and honest root-cause analysis, advance mathematical understanding as much as positive results. The discrete information-geometric approach presented here is offered as a stepping stone toward a deeper understanding of the statistical structure of prime distributions.
 
 \section*{Acknowledgments}
-The author acknowledges the use of the Hermes Agent framework for computational assistance, algorithm scripting, and data formatting during the preparation of this manuscript. The validated segmented sieve code, computational results, and LaTeX typesetting were produced with this framework.
+The author acknowledges the use of computational assistance for algorithm scripting, data analysis, and LaTeX typesetting during the preparation of this manuscript. Validated sieve code and supporting computational infrastructure are available at \url{https://github.com/rnmbaker-spec/rapf-prime-framework}.
 
 \begin{thebibliography}{9}
 \bibitem{HL23}
@@ -355,7 +355,7 @@ G. H. Hardy and J. E. Littlewood, \textit{Some problems of ``Partitio numerorum'
 H. Maier, \textit{Primes in short intervals}, Michigan Math. J. \textbf{32} (1985), 221--225.
 
 \bibitem{Bre14}
-R. P. Brent, \textit{Distribution of twin primes: heuristic and computational results}, arXiv:1404.XXXX (2014).
+R. P. Brent, \textit{Twin primes (seem to be) more random than primes}, ANU Workshop (2014). Slides available at \url{https://maths-people.anu.edu.au/~brent/pd/twin_primes_and_primes.pdf}.
 
 \bibitem{Gal76}
 P. X. Gallagher, \textit{On the distribution of primes in short intervals}, Mathematika \textbf{23} (1976), 4--9. Corrigendum, \textbf{28} (1981), 86.
