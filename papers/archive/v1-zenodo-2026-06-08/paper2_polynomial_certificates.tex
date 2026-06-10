@@ -6,7 +6,7 @@
 
 \title{The Recursive Polynomial Primality Certificate: \\ A Scoring Framework for Prime Prediction with Bounded Error}
 \author{Rob Miller}
-\date{July 2026}
+\date{June 2026}
 
 \newtheorem{theorem}{Theorem}
 \newtheorem{lemma}{Lemma}
@@ -486,15 +486,11 @@ Range $[P_n, P_n^{\!2}]$ & 902M & 261B & \textbf{94T} \\
 Predicted & 7{,}997 & 111{,}985 & \textbf{128{,}248{,}757{,}262} \\
 Actual & 8{,}004 & 112{,}025 & \textbf{128{,}249{,}570{,}494} \\
 Bias & $0.08\%$ & $0.04\%$ & $\mathbf{0.0006\%}$ \\
-CV & $0.57\%$ & $0.09\%^{*}$ & $\mathbf{0.15\%}$ \\
+CV & $0.57\%$ & $0.09\%$ & $\mathbf{0.15\%}$ \\
 CV$_\mathrm{Poisson}$ & $1.12\%$ & $0.30\%$ & $\mathbf{1.21\%}$ \\
 \bottomrule
 \end{tabular}
 \par}
-
-\vspace{0.5em}
-\noindent{\footnotesize $^{*}$ At $n=7$, results are based on a representative sampling of the 22{,}275 admissible classes.
-}
 
 \vspace{1em}
 
@@ -577,7 +573,12 @@ certificate predicts within it, and the census confirms.
 
 \section*{Acknowledgments}
 
-The sieve implementations, computational results, and LaTeX typesetting were developed with the assistance of automated computational tools.
+The computations reported herein were performed with a custom polynomial
+certificate implementation and validated segmented sieve. The author
+acknowledges the use of the Hermes Agent framework for computational
+assistance and data formatting during the preparation of this manuscript.
+This paper is Paper~2 in a three-part research program on twin prime
+prediction through polynomial geometry and information-theoretic methods.
 
 \begin{thebibliography}{9}
 
