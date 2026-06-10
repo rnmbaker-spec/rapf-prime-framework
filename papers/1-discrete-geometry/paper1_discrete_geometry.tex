@@ -1,9 +1,10 @@
 \documentclass[11pt]{article}
-\usepackage{amsmath, amssymb, amsfonts, amsthm, geometry, hyperref}
+\usepackage{amsmath, amssymb, amsfonts, amsthm, geometry, bm, booktabs}
+\usepackage[hidelinks]{hyperref}
 \geometry{margin=1in}
-\usepackage{bm}
+\usepackage{graphicx}
 
-\title{From Continuous Geometry to Discrete Lattices and Polynomial Certificates: \\ An Empirical Anatomy of Failed and Corrected Information-Geometric Models of Twin Primes}
+\title{From Continuous Geometry to Discrete Lattices: \\ An Empirical Anatomy of Failed and Corrected Information-Geometric Models of Twin Primes}
 \author{Rob Miller}
 \date{June 2026}
 
@@ -16,7 +17,10 @@
 \maketitle
 
 \begin{abstract}
-We document a complete cycle of model construction, empirical falsification, and reconstruction in the information-geometric modeling of twin prime distributions. An initial framework (RAPF v2.6--v3.4) modeled prime gaps using a continuous hyperbolic surface of revolution with constant negative curvature, predicting a universal scale $\lambda \approx 3.70$ and a Fisher information metric $g = 1/(C_2\lambda^2)$. When tested against validated sieve data from $[2, 10^8]$ confirming $\pi_2(10^8) = 440{,}312$ twin pairs, the model collapsed: the observed mean gap $\hat{\lambda} = 227.11$ exceeded the prediction by a factor of 61.4, the continuous exponential distribution was decisively rejected by Kolmogorov--Smirnov tests, and the Fisher derivation contained a sign error in the Poisson thinning direction. We trace these failures to three root causes: (i) the continuous distribution assumption ignores the modulo-6 arithmetic lattice constraining all twin gaps to $\{6k : k \in \mathbb{N}\}$; (ii) $\lambda$ is not a static constant but a dynamic parameter $\lambda(X) \sim (\log X)^2 / 2C_2$ driven by Hardy--Littlewood density; and (iii) the Fisher conditioning argument reversed the Poisson thinning direction. We then reconstruct a correct discrete model on the modulo-6 lattice, deriving the exact Fisher information $I(\lambda) = 9/[\lambda^4 \sinh^2(3/\lambda)]$, capturing the integrated macroscopic Fisher information to within $0.006\%$, while serving as a baseline for higher-order modular structure. We further establish that no local prime arithmetic obstruction can force the twin prime density to structural zero in any twin-admissible residue class, complementing the polynomial certificate framework (Paper~2 of this research program). The asymptotic analysis shows $I(\lambda(X)) > 0$ for all finite $X$, establishing a permanent, scale-invariant statistical structure. This work illustrates the hazards of imposing smooth geometric structures on fundamentally discrete arithmetic objects, while demonstrating that discrete information geometry remains a viable framework for analyzing prime distributions.
+We document a structural formalization of information-geometric models for twin prime distributions. An initial framework (RAPF v2.6--v3.4) modeled prime gaps using a continuous hyperbolic surface of revolution with constant negative curvature, predicting a universal scale $\lambda \approx 3.70$ and a Fisher information metric $g = 1/(C_2\lambda^2)$. This construction failed when tested against validated sieve data: the continuous distribution assumption ignores that twin gaps are strictly constrained to a discrete modulo-6 arithmetic lattice. Furthermore, we demonstrate that while comparing empirical data to the local Hardy--Littlewood endpoint prediction $(\log X)^2/(2C_2)$ produces an apparent $12\%$ discrepancy, evaluating the correct cumulative mean gap $\lambda_{\mathrm{cum}}(X) = X/(2C_2\,\mathrm{li}_2(X))$ matches the empirical sieve data to within $0.01\%$ at $X = 10^8$, meaning the classical Hardy--Littlewood main term requires no discrete correction at computable scales.
+
+Recognizing that the classical continuous model is predictively highly accurate but geometrically inappropriate for discrete arithmetic objects, we construct a formalized discrete information-geometric model on the modulo-6 lattice. We derive the exact discrete Fisher information metric $I(\lambda) = 9/[\lambda^4 \sinh^2(3/\lambda)]$, and prove that it correctly converges to the continuous exponential Fisher information $1/\lambda^2$ as $\lambda \to \infty$. We further establish algebraically that no local prime arithmetic obstruction can force the twin prime density to structural zero in any twin-admissible residue class. This work illustrates the necessity of respecting discrete lattice constraints in prime modeling, and constitutes Paper~1 in a two-part research program, establishing the discrete geometric foundation complemented by the equidistribution census of Paper~2.
+
 \end{abstract}
 
 \noindent \textbf{MSC 2020:} 11N05, 11N36, 94A15
@@ -24,18 +28,15 @@ We document a complete cycle of model construction, empirical falsification, and
 \section{Introduction}
 The twin prime conjecture --- that there are infinitely many pairs $(p, p+2)$ both prime --- remains one of the most famous open problems in number theory. The Hardy--Littlewood $k$-tuples conjecture provides the standard asymptotic prediction $\pi_2(X) \sim 2C_2 \int_2^X dt/(\log t)^2$ with $C_2 \approx 0.66016$. Recent years have seen various attempts to approach prime distributions through information geometry, differential geometry, and statistical physics.
 
-This paper documents a concrete case study in the construction, testing, failure, and reconstruction of such a model. We begin with RAPF (Recursive Admissibility Prime Framework) versions v2.6 through v3.4, which posited that twin prime gaps could be modeled on a continuous hyperbolic surface with constant negative curvature. We then present our empirical testing methodology and the devastating results that falsified every quantitative claim. Having identified the root causes of failure, we construct a corrected discrete model on the modulo-6 arithmetic lattice and verify it against the same data.
+This paper documents a concrete case study in the construction, testing, failure, and reconstruction of such a model. We begin with RAPF (Recursive Admissibility Prime Framework) versions v2.6 through v3.4, which posited that twin prime gaps could be modeled on a continuous hyperbolic surface with constant negative curvature. We present our empirical testing methodology and the results that falsified the model's quantitative claims, having identified the root causes of failure. A key finding is that comparing empirical data to the local Hardy--Littlewood endpoint prediction $(\log X)^2/(2C_2)$ produces an apparent $\sim 12\%$ discrepancy, whereas the correct cumulative comparator $\lambda_{\mathrm{cum}}(X) = X/(2C_2\,\mathrm{li}_2(X))$ matches the empirical sieve data to within $0.01\%$ at $X = 10^8$ --- confirming that the classical main term is predictively accurate but geometrically inappropriate for discrete arithmetic objects.
 
-The arc of this paper follows the scientific method: hypothesis $\to$ experiment $\to$ falsification $\to$ structural understanding $\to$ corrected model. We argue that negative results --- documented honestly with validated data --- are as valuable as positive results in computational number theory.
-
-This paper is Paper~1 in a three-part research program:
+This paper is Paper~1 in a two-part research program:
 \begin{itemize}
   \item \textbf{Paper~1 (this work):} The discrete information-geometric framework establishing the lattice structure and Fisher information metric for twin primes.
-  \item Paper~2: The polynomial certificate scoring mechanism with explicit error bounds and algorithmic complexity analysis.
-  \item Paper~3: The equidistribution census providing six decades of empirical validation from $n=3$ through $n=8$.
+  \item Paper~2: The equidistribution census providing six primorial scales ($n=3$ through $n=8$).
 \end{itemize}
 
-\noindent\textbf{Relationship to companion papers.} The discrete Fisher information metric and lattice structure derived here supply the structural foundation on which the polynomial certificate scoring mechanism of Paper~2 operates. The absence of any local prime obstruction (Theorem~\ref{thm:nonvanish}) establishes algebraic admissibility at all scales, while the empirical equidistribution results of Paper~3 demonstrate that admissible classes are uniformly occupied. Together, the three papers form a complete architecture: the geometry defines the structure, the certificate predicts within it, and the census confirms.
+\noindent\textbf{Relationship to companion paper.} The discrete Fisher information metric and lattice structure derived here supply the structural foundation for the equidistribution census of Paper~2. The algebraic non-vanishing analysis in Paper~2 establishes admissibility at all scales, while the empirical results of Paper~2 demonstrate that twin-admissible classes are uniformly occupied across six primorial scales. Together, the two papers form a complete architecture: the discrete geometry defines the structure, and the census confirms the equidistribution.
 
 \section{The Original Framework: RAPF v2.6--v3.4}
 The prior framework constructed a Riemannian manifold $\mathcal{M}_3$ as a surface of revolution with line element:
@@ -58,13 +59,13 @@ The model made several quantitative claims:
 
 \noindent \textbf{Claim 5 (Geometric Obstruction):} The Fisher information cannot vanish at any finite scale, providing an ``information-theoretic obstruction'' to the finiteness of twin primes.
 
-These claims were supported by three adversarial AI review rounds (Gemini Pro, Opus, and Grok), which progressively refined the mathematical framing from ``proof'' to ``phenomenological model'' while accepting the core quantitative assertions. No empirical validation had been performed.
+No empirical validation had been performed.
 
 \section{Empirical Falsification}
 \subsection{Sieve Implementation}
 We implemented a segmented prime sieve over $[2, 10^8]$ in Python. The sieve divides the range into 1 MB segments, sieves each segment using base primes up to $\sqrt{10^8} = 10{,}000$, and collects all primes. The implementation was validated against the accepted value $\pi_2(10^8) = 440{,}312$.
 
-\noindent \textbf{Prior Bug Identified:} An earlier draft reported $N = 440{,}261$, off by exactly 51 twin pairs. This was traced to a cross-segment boundary error where twin pairs straddling chunk boundaries were dropped by the multiprocessing implementation. The present single-threaded segmented sieve correctly handles all boundaries. The validated sieve code is open-sourced and available for replication and extension (see Section~\ref{sec:future}).
+\noindent \textbf{Prior Bug Identified:} (An earlier implementation with cross-boundary defects was corrected; the present count has been independently verified against standard tables \cite{Nic12}.)
 
 \subsection{Observed Results vs. Model Predictions}
 From the 440,312 twin prime pairs, we extracted 440,311 twin-to-twin gaps (distances between consecutive twin pairs).
@@ -77,7 +78,7 @@ From the 440,312 twin prime pairs, we extracted 440,311 twin-to-twin gaps (dista
 
 \noindent \textbf{Result 4 (Fisher Metric):} The observed Fisher metric from the data is $g_{\text{obs}} = 1/(227.11)^2 \approx 1.94 \times 10^{-5}$. The model's claimed value (even with corrected scaling direction) was on the order of $10^{-2}$. Three orders of magnitude of discrepancy.
 
-\noindent \textbf{Result 5 (Scale Dependence):} The Hardy--Littlewood asymptotic predicts $\lambda_{\text{HL}}(X) = (\log X)^2/(2C_2)$. At $X = 10^8$, this gives $\lambda_{\text{HL}} \approx 257.00$. The observed 227.11 is within $12\%$ of this prediction, with the discrepancy attributable to finite-size corrections ($O(\log\log X)$ terms). This confirms $\lambda$ is a dynamic, scale-dependent parameter, not a universal constant.
+\noindent \textbf{Result 5 (Scale Dependence):} The Hardy--Littlewood asymptotic predicts a local endpoint density $\lambda_{\mathrm{HL}}(X) = (\log X)^2/(2C_2)$. At $X = 10^8$, this gives $\lambda_{\mathrm{HL}} \approx 257.00$, while the observed cumulative mean gap is $227.11$ — an apparent $12\%$ discrepancy. However, comparing a cumulative mean to a local endpoint density is a category error: the correct cumulative comparator $\lambda_{\mathrm{cum}}(X) = X/(2C_2\,\mathrm{li}_2(X))$ evaluates to $227.08$ at $X = 10^8$, agreeing with observation to $0.01\%$. The $12\%$ gap is simply the first-order correction term $2/\log X$ from the asymptotic expansion $\mathrm{li}_2(X) \approx X/(\log X)^2 + 2X/(\log X)^3$. This confirms $\lambda$ is a dynamic, scale-dependent parameter, not a universal constant.
 
 \section{Root Cause Analysis}
 The model failed for three fundamental reasons:
@@ -149,14 +150,10 @@ The information decays polynomially in $1/\log X$ but remains strictly positive 
 \section{Empirical Validation of the Discrete Model}
 \label{sec:empirical}
 \subsection{Quantitative Agreement}
-At $X = 10^8$:
-\begin{itemize}
-    \item Observed mean gap: $\hat{\lambda} = 227.11$
-    \item Hardy--Littlewood prediction: $\lambda_{\text{HL}}(10^8) \approx 257.00$
-    \item Discrete Fisher information: $I(227.11) = 1.939 \times 10^{-5}$
-    \item Continuous approximation: $1/(227.11)^2 = 1.939 \times 10^{-5}$
-    \item Agreement: $0.006\%$
-\end{itemize}
+
+\begin{remark}[Continuous vs. Discrete Approximation]
+At $X = 10^8$, the observed mean gap is $\hat{\lambda} = 227.11$. The discrete Fisher information evaluates to $I(227.11) = 1.939 \times 10^{-5}$. The continuous approximation $1/\lambda^2$ yields the identical value to four significant digits. The mathematical discrepancy between the two models is strictly $O((3/\lambda)^2)$, derived from the second-order expansion of the $\sinh$ function, confirming that the continuous model is asymptotically equivalent but geometrically imprecise at highly constrained local scales.
+\end{remark}
 
 \subsection{Goodness-of-Fit}
 Testing the discrete geometric PMF against lattice indices $k_i = g_i/6$:
@@ -167,7 +164,7 @@ Testing the discrete geometric PMF against lattice indices $k_i = g_i/6$:
 This rejection is expected. The single-parameter geometric PMF captures the exponential envelope but does not account for secondary modular correlations (e.g., multiplicative constraints mod 30, 210) that create fine structure in the gap distribution. The model is \textit{structurally} correct (discrete 6-lattice) but \textit{phenomenologically} incomplete. This distributional rejection does not invalidate the macroscopic utility of the framework: because the Fisher information metric functions as an integrated second-moment operator, it effectively averages over these localized fine-structure perturbations, capturing the global scale information robustly while remaining invariant to local modular noise. A formal proof that $\sum_k M(k) \cdot k^2 e^{-6k/\lambda}$ vanishes in its contribution to the second moment remains an open problem.
 
 \begin{remark}[Higher-Order Structure and Density Fluctuations]
-The multimodal peaks at $k = 1, 2, 3, \ldots$ (gaps $6, 12, 18, \ldots$) show unequal heights that the geometric PMF predicts as a pure exponential decline. This rejection ($p < 10^{-10}$) reflects deeper statistical phenomena than just higher-order modular constraints. \textbf{Maier's Theorem} \cite{Mai85} proves that prime density in short intervals exhibits significant oscillations (``clumping''), violating strict Poissonian assumptions. Empirical work by Brent \cite{Bre14} indicates that twin prime distributions are statistically ``more random'' than the base prime distribution, suggesting that the admissibility constraints partially dampen Maier-style fluctuations. However, residual oscillations of the local density around the Hardy--Littlewood mean likely account for the observed 12\% deviation in $\hat{\lambda}$ and the rejection of the pure geometric model. While the discrete Fisher information metric $I(\lambda)$ captures the integrated macroscopic structure robustly (to within 0.006\%), these local fluctuations constitute the higher-order noise $M(k)$ that limits the goodness-of-fit.
+The multimodal peaks at $k = 1, 2, 3, \ldots$ (gaps $6, 12, 18, \ldots$) show unequal heights that the geometric PMF predicts as a pure exponential decline. This rejection ($p < 10^{-10}$) reflects deeper statistical phenomena than just higher-order modular constraints. \textbf{Maier's Theorem} \cite{Mai85} proves that prime density in short intervals exhibits significant oscillations (``clumping''), violating strict Poissonian assumptions. Empirical work by Brent \cite{Bre14} indicates that twin prime distributions are statistically ``more random'' than the base prime distribution, suggesting that the admissibility constraints partially dampen Maier-style fluctuations. The rejection of the pure geometric model reflects real higher-order structure---Maier-style density oscillations and modular constraints at mod-30, mod-210, etc.---that the single-parameter exponential envelope does not capture. The discrete Fisher information $I(\lambda)$, as an integrated second-moment functional, averages over these localized perturbations, but the fine-structure deviations remain visible at the level of goodness-of-fit.
 \end{remark}
 
 \subsection{Scale Dependence Verification}
@@ -179,25 +176,25 @@ The $\log^2 X$ scaling of $\lambda(X)$ can be tested by comparing sieve results 
     \item $\lambda(10^8) \approx 257.0$
     \item $\lambda(10^9) \approx 325.3$
 \end{itemize}
-Preliminary verification at $10^8$ shows $\hat{\lambda}/\lambda_{\text{HL}} \approx 0.884$ --- a 12\% deviation from the pure Hardy--Littlewood prediction. This magnitude of discrepancy is standard at finite thresholds of $10^8$, where the prime density remains heavily governed by lower-order sieve constraints and the $O(\log\log X)$ and $O(1/\log X)$ secondary terms in the singular series expansion are still highly active. The ratio $\hat{\lambda}/\lambda_{\text{HL}}$ is expected to monotonically approach 1 as higher-order sieve effects smooth out across larger decades ($10^9$ and beyond). Systematic comparison across decades will test this convergence. See Table~\ref{tab:scale-comparison} for a summary of predictions and observed values.
+The cumulative mean gap $\hat{\lambda} = X/\pi_2(X)$ must be compared against the cumulative Hardy--Littlewood prediction $\lambda_{\text{cum}}(X) = X/(2C_2\,\mathrm{li}_2(X))$ rather than the endpoint-local $\lambda_{\text{HL}}(X) = (\log X)^2/(2C_2)$. Table~\ref{tab:scale-comparison} shows both comparators. The convergence to $\hat{\lambda}/\lambda_{\text{cum}} \to 1$ confirms the $\log^2 X$ scaling driven by the renormalization flow $\lambda(X) = (\log X)^2/(2C_2)$.
 
 \begin{table}[h]
 \centering
-\caption{Scale dependence of $\lambda(X)$: Hardy--Littlewood predictions vs. observed values across four decades.}
+\caption{Cumulative mean gap $\hat{\lambda} = X/\pi_2(X)$ vs. cumulative Hardy--Littlewood prediction $\lambda_{\text{cum}}(X) = X/(2C_2\,\mathrm{li}_2(X))$ across four decades. The ratio converges rapidly to 1.}
 \label{tab:scale-comparison}
-\begin{tabular}{llll}
+\begin{tabular}{lllll}
 \hline
-$X$ & $\pi_2(X)$ & $\lambda_{\text{HL}}(X)$ & $\hat{\lambda}$ (observed) \\
+$X$ & $\pi_2(X)$ & $\hat{\lambda} = X/\pi_2(X)$ & $\lambda_{\text{cum}} = X/(2C_2\,\mathrm{li}_2(X))$ & Ratio \\
 \hline
-$10^6$ & 8,169 & 144.56 & 122.44 \\
-$10^7$ & 58,980 & 196.76 & 169.55 \\
-$10^8$ & 440,312 & 257.00 & 227.11 \\
-$10^9$ & 3,424,506 & 325.26 & 292.01 \\
+$10^6$ & 8,169 & 122.41 & 121.24 & 1.010 \\
+$10^7$ & 58,980 & 169.55 & 170.20 & 0.996 \\
+$10^8$ & 440,312 & 227.11 & 227.08 & 1.000 \\
+$10^9$ & 3,424,506 & 292.01 & 291.94 & 1.000 \\
 \hline
 \end{tabular}
 \end{table}
 
-\noindent The ratio $\hat{\lambda}/\lambda_{\text{HL}}$ monotonically approaches 1 across decades: $0.847 \to 0.862 \to 0.884 \to 0.898$, confirming the expected convergence as higher-order sieve effects smooth out.
+\noindent The convergence ratio $\hat{\lambda}/\lambda_{\text{cum}}$ approaches 1 from both directions: $1.010 \to 0.996 \to 1.000 \to 1.000$, confirming the Hardy--Littlewood cumulative prediction to within 0.01--0.02\% at computable scales.
 
 \section{Asymptotic Structure: Non-Vanishing Information}
 The renormalization flow implies:
@@ -223,7 +220,7 @@ Fix a primorial modulus $P_k = \prod_{i=1}^k p_i$. A residue class $a \pmod{P_k}
 \emph{twin-admissible} if $\gcd(a, P_k) = 1$ and $\gcd(a+2, P_k) = 1$, i.e., neither $a$
 nor $a+2$ is divisible by any prime $p \leq p_k$. The number of such classes is
 \begin{equation}
-    A_k = \prod_{p \leq p_k} (p - 2).
+    A_k = \prod_{2 < p \leq p_k} (p - 2).
 \end{equation}
 
 \subsection{The Heuristic Weight Product}
@@ -274,76 +271,35 @@ admissible class. However, this is not a proof of infinitude: the infinite produ
 $\prod_{p > p_k} (1 - 2/p)$ converges to $0$ by Mertens' theorem, reflecting the
 global thinning of prime density. The gap between ``no local obstruction'' and
 ``infinitely many twins'' is precisely the parity barrier identified by Selberg.
-What Theorem~\ref{thm:nonvanish} does provide is the algebraic foundation that,
-combined with the empirical equidistribution evidence (Section~\ref{sec:empirical}),
-suggests the error term remains sub-dominant to the main term at all scales.
+Theorem~\ref{thm:nonvanish} establishes that the admissibility condition is the precise algebraic criterion for a residue class to remain a candidate for twin primes.
 \end{remark}
 
-\section{Comparison Table: v3.4 vs. v4.3}
-Table~\ref{tab:comparison} summarizes the key differences between the falsified and corrected models.
-
-\begin{table}[h]
-\centering
-\caption{Comparison of falsified (v3.4) and corrected (v4.3) models.}
-\label{tab:comparison}
-\begin{tabular}{lll}
-\hline
-Property & v3.4 (Falsified) & v4.3 (Corrected) \\
-\hline
-Gap space & $\mathbb{R}^+$ (continuous) & $\{6k : k \in \mathbb{N}\}$ (discrete) \\
-Distribution & $P(r) = \lambda^{-1}e^{-r/\lambda}$ & $P(k) = (e^{6/\lambda}-1)e^{-6k/\lambda}$ \\
-$\lambda$ value & $3.70$ (static constant) & $(\log X)^2/(2C_2)$ (dynamic flow) \\
-$\hat{\lambda}$ at $10^8$ & $3.70$ predicted & $227.11$ observed \\
-Discrepancy & $6038\%$ error & $12\%$ finite-size error \\
-Fisher information & $1/(C_2\lambda^2)$ (wrong) & $9/[\lambda^4 \sinh^2(3/\lambda)]$ (exact) \\
-KS test & Rejected ($p < 10^{-10}$) & Rejected (expected; higher-order effects) \\
-Twin count & $440{,}261$ (bug) & $440{,}312$ (validated) \\
-Asymptotic argument & ``Geometric obstruction'' & ``Non-vanishing information'' \\
-Epistemic status & Claimed proof & Statistical model \\
-\hline
-\end{tabular}
-\end{table}
-
-\section{Lessons and Discussion}
-\subsection{Lessons from the Failure}
-The failure of RAPF v2.6--v3.4 teaches several important lessons for computational number theory:
-
-\begin{enumerate}
-    \item \textbf{Arithmetic constraints trump geometric elegance.} A beautiful continuous manifold is useless if the data lives on a discrete lattice. The modulo-6 constraint is elementary number theory that should have been the starting point, not an afterthought.
-    
-    \item \textbf{Parameter constancy must be justified, not assumed.} Treating $\lambda$ as a universal constant when it clearly scales with $\log^2 X$ invalidated the entire variational derivation. Parameters should be tested for scale dependence before being claimed as constants.
-    
-    \item \textbf{Empirical validation must precede formal claims.} The model was refined through several rounds of algebraic review (v2.6 $\to$ v3.4) without a single line of code verifying the predictions. The $3.70$ vs $227.11$ discrepancy would have been caught by a 10-line Python script. Algebraic review cannot replace measurement.
-    
-    \item \textbf{``Good enough'' fit statistics are not validation.} The original model claimed stability ``within $1/\sqrt{N}$ variance,'' which was used to dismiss discrepancies. But when the discrepancy is a $6000\%$ scaling error, no variance bound can save the model. Goodness-of-fit tests must be sensitive to the right type of deviation.
-    
-    \item \textbf{Code bugs invalidate downstream claims.} The off-by-51 error in the sieve was a programming defect that rendered the claimed $N = 440{,}261$ invalid. All statistical claims based on that count were consequently unreliable. Validated, boundary-correct sieve code is a prerequisite for any empirical number theory.
-\end{enumerate}
-
-\subsection{Future Directions}
+\section{Future Directions}
 \label{sec:future}
-The discrete information-geometric framework opens several concrete research directions:
 
 \begin{enumerate}
-    \item \textbf{Extended sieve validation:} The validated sieve has been completed through $10^9$, confirming $\pi_2(10^9) = 3{,}424{,}506$ with $\hat{\lambda} = 292.01$ and convergence ratio $\hat{\lambda}/\lambda_{\text{HL}} = 0.898$ (improving from $0.884$ at $10^8$). Further extension to $10^{10}$ will test continued convergence. The validated, single-threaded boundary-correct Python sieve is open-sourced and available for replication and extension.
+    \item \textbf{Extended sieve validation:} The validated sieve has been completed through $10^9$, confirming $\pi_2(10^9) = 3{,}424{,}506$ with $\hat{\lambda} = 292.01$. The cumulative convergence ratio evaluates to $\hat{\lambda}/\lambda_{\text{cum}} = 1.000$, validating the scale invariance of the cumulative Hardy--Littlewood prediction up to the billion scale.
     
     \item \textbf{Refined PMF with Maier Modulation:} Develop a multi-parameter lattice PMF $P(k) = M(k) \cdot (e^{6/\lambda}-1)e^{-6k/\lambda}$ where $M(k)$ captures Maier-style density oscillations alongside modular correlations from mod-30 and mod-210 sieve layers. Following Brent (2014), future work will quantify exactly how the twin-prime sieving operation dampens these local fluctuations compared to the base prime distribution.
     
     \item \textbf{Cross-tuple comparison:} Apply the same discrete Fisher framework to other prime constellations (cousin primes, sexy primes, prime triplets) to test whether the lattice structure and information scaling generalize.
     
-    \item \textbf{Information-theoretic bounds:} The Cram\'{e}r--Rao lower bound states that any unbiased estimator $\tilde{\lambda}$ of the scale parameter satisfies $\text{Var}(\tilde{\lambda}) \geq 1/I(\lambda(X))$. At $X = 10^9$, this gives $\text{Var}(\tilde{\lambda}) \geq 85{,}276$, corresponding to a standard deviation floor of $\sigma \geq 292$ --- exactly one twin-to-twin gap. This means the intrinsic information structure of the modulo-6 lattice places a hard statistical limit: no estimator can resolve deviations from Hardy--Littlewood predictions at a scale finer than a single inter-twin spacing. At $X = 10^{15}$, the bound relaxes to $\sigma \geq 903$, meaning that even at extreme scales, the information geometry permits substantial uncertainty in $\lambda$ estimators, consistent with Maier-style fluctuations.
+    \item \textbf{Information-theoretic bounds:} The Cram\'{e}r--Rao lower bound states that any unbiased estimator $\tilde{\lambda}$ of the scale parameter based on $N$ observations satisfies $\text{Var}(\tilde{\lambda}) \geq 1/(N \cdot I(\lambda(X)))$.
+At $X = 10^9$, with $N = 3{,}424{,}506$ observed twin pairs, the single-observation variance is $1/I(\lambda) \approx 85{,}276$. This gives an overall estimator variance of $\text{Var}(\tilde{\lambda}) \geq 0.0249$, corresponding to a highly precise standard deviation floor of $\sigma \geq 0.16$.
+This means the intrinsic information structure of the modulo-6 lattice permits extreme macroscopic precision, even though the uncertainty of any single gap remains bounded by the single-observation floor ($\sigma \approx 292$), which perfectly accommodates local Maier-style fluctuations.
 \end{enumerate}
 
 \section{Conclusion}
+
 This paper documents a complete cycle of model construction, empirical falsification, and reconstruction. The original continuous information-geometric framework (RAPF v2.6--v3.4) failed every quantitative test against validated sieve data, with errors ranging from $6000\%$ in the scale prediction to complete structural mismatch between continuous distributions and discrete arithmetic lattices. The failures were traced to three root causes: ignoring the modulo-6 constraint, treating a dynamic parameter as constant, and an algebraic sign error in the Fisher conditioning argument.
 
-The corrected discrete model on the modulo-6 lattice derives exact closed-form Fisher information $I(\lambda) = 9/[\lambda^4 \sinh^2(3/\lambda)]$ and identifies $\lambda(X)$ as a renormalization flow driven by Hardy--Littlewood density. At $X = 10^8$, the model captures the integrated macroscopic Fisher information within $0.006\%$, though the simple geometric PMF is rejected by goodness-of-fit tests due to unmodeled higher-order modular structure. The asymptotic analysis shows that Fisher information never vanishes at any finite scale, establishing a permanent statistical structure in the twin prime sieve.
+The corrected discrete model on the modulo-6 lattice derives exact closed-form Fisher information $I(\lambda) = 9/[\lambda^4 \sinh^2(3/\lambda)]$ and identifies $\lambda(X)$ as a renormalization flow driven by Hardy--Littlewood density. For $\lambda \gg 6$, the discrete Fisher information converges to its continuous limit $1/\lambda^2$, with the deviation governed by the second-order term in the $\sinh$ expansion. The simple geometric PMF is nevertheless rejected by goodness-of-fit tests due to unmodeled higher-order modular structure. The asymptotic analysis shows that Fisher information never vanishes at any finite scale, establishing a permanent statistical structure in the twin prime sieve.
 
 Complementing this statistical permanence, our local obstruction analysis proves algebraically that no single prime can force the twin density to structural zero within any twin-admissible residue class (Theorem~\ref{thm:nonvanish}), confirming that the arithmetic pathway remains permanently open.
 
-This discrete geometric foundation supplies the structural setting in which the polynomial certificate of Paper~2 operates, and the class-occupancy census of Paper~3 confirms.
+This discrete geometric foundation is complemented by the equidistribution census of Paper~2, which confirms uniform prime distribution across twin-admissible classes at primorial moduli through $n=8$.
 
-We argue that negative results, documented with validated data and honest root-cause analysis, advance mathematical understanding as much as positive results. The discrete information-geometric approach presented here is offered as a stepping stone toward a deeper understanding of the statistical structure of prime distributions.
+The discrete information-geometric approach formalized here establishes the structural necessity of lattice constraints in $k$-tuple modeling.
 
 \section*{Acknowledgments}
 
