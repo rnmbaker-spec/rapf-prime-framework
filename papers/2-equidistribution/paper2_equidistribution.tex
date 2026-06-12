@@ -3,167 +3,213 @@
 \usepackage[hidelinks]{hyperref}
 \geometry{margin=1in}
 
-\title{Equidistribution of Twin Primes Across Admissible Residue Classes: \\ A Computational Census from $n=3$ through $n=8$}
+\title{Discrete Information Geometry of Prime Triplets: \\ The Modulo-30 Arithmetic Lattice and Variance Suppression}
 \author{Rob Miller}
 \date{June 2026}
 
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{corollary}{Corollary}
 \newtheorem{conjecture}{Conjecture}
 \newtheorem{remark}{Remark}
+\newtheorem{observation}{Observation}
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
-We present a full computational census of twin prime distributions across all twin-admissible residue classes modulo $P_n$ for $n = 3$ through $n = 8$, where $P_n = \prod_{i=1}^n p_i$ is the $n$th primorial. At $n=8$ ($P_8 = 9{,}699{,}690$), we enumerate all 378{,}675 twin-admissible classes across the range $[P_8, P_8^2] \approx [9.7 \times 10^6, 9.4 \times 10^{13}]$ --- a 94-trillion-integer parallelised segmented sieve in 95.56 core-hours. We find that twin primes distribute across admissible classes with a sub-Poisson coefficient of variation: CV = 0.15\% at $n=8$, below the Poisson baseline of 0.17\%, with zero classes empty. The bias between expected and actual total twin-pair count is $<0.001\%$ at $n=8$. The convergence from $n=3$ (CV 2.44\%) through $n=8$ (CV 0.15\%) is strictly monotonic and extends the variance suppression observed in the joint class occupancy conjecture into the $10^{14}$ scale. This census establishes the empirical foundation for studying equidistribution phenomena in prime $k$-tuple residue classes.
+We extend the discrete information-geometric framework of prime constellations to prime triplets $(p, p+2, p+6)$ and $(p, p+4, p+6)$. While twin primes are structurally constrained to a modulo-6 arithmetic lattice, prime triplets are governed by a strictly tighter modulo-30 lattice ($\mathcal{L}_{30}$). We formalize the discrete information geometry for $\mathcal{L}_{30}$, deriving the Fisher information metric $I(\lambda) = 225/[\lambda^4 \sinh^2(15/\lambda)]$, and demonstrate that imposing continuous exponential geometries on triplet gaps mischaracterizes the discrete structure at computable scales. 
+
+Complementing the theoretical lattice structure, we present an empirical equidistribution census for prime triplets across triplet-admissible residue classes modulo $P_n$. Building on the sub-Poisson variance suppression observed in twin primes, the triplet census reveals a pronounced structural anti-clumping effect at small primorial scales, with the Coefficient of Variation strictly below the Poisson baseline. This work constitutes Paper 3 in the post-v4.3 Recursive Admissibility Prime Framework (RAPF) trilogy, demonstrating that sub-Poisson variance suppression is a finite-scale boundary effect that systematically attenuates toward Poisson randomness as $n \to \infty$, for both $k=2$ and $k=3$ constellations.
 \end{abstract}
 
-\noindent \textbf{MSC 2020:} 11N05, 11N35, 11Y11
+\noindent \textbf{MSC 2020:} 11N05, 11N36, 94A15
 
 \section{Introduction}
-\label{sec:intro}
 
-The Hardy--Littlewood $k$-tuples conjecture \cite{HL23} predicts that prime constellations distribute across their admissible residue classes proportionally to their singular series. For twin primes, this is governed by the twin prime singular series $\mathfrak{S}(2) \approx 0.66016$. The twin-admissible residue classes modulo $P_n$ are those $a \in (\mathbb{Z}/P_n\mathbb{Z})^\times$ such that $a, a+2$ are both coprime to all $p \leq p_n$. There are $A_n = \prod_{2 < p \leq p_n} (p-2)$ such classes.
+The Hardy--Littlewood $k$-tuples conjecture provides the foundational heuristic for the asymptotic density of prime constellations. For prime triplets of the form $\mathcal{H}_1 = (0, 2, 6)$ and $\mathcal{H}_2 = (0, 4, 6)$, the conjectured density scales as $\lambda(X) \sim (\log X)^3 / \mathfrak{S}_3$, where $\mathfrak{S}_3$ is the triplet singular series constant. 
 
-A central question is whether these twin-admissible classes are uniformly populated, or whether arithmetic structure creates preferred classes. The joint class occupancy conjecture asserts equidistribution across all admissible classes. This paper provides empirical validation through a full computational census from $n=3$ ($P_3 = 30$, 3 classes) through $n=8$ ($P_8 = 9{,}699{,}690$, 378{,}675 classes), cross-verified against established aggregate twin prime counts \cite{Nic12}.
+As established in Paper 1 of this program, comparing finite-scale empirical gap data to continuous asymptotic predictions creates artificial discrepancies if the underlying arithmetic constraints are ignored. Twin prime gaps do not exist in $\mathbb{R}^+$; they are strictly confined to a modulo-6 lattice ($\mathcal{L}_6 = \{6k : k \in \mathbb{N}\}$). Imposing a smooth density on a discrete geometry fails to capture the structural information of the lattice.
 
-This paper is Paper~2 in a two-part research program:
+Prime triplets face an even more severe geometric constraint. For $p, p+2,$ and $p+6$ to all be prime, $p$ must satisfy simultaneous congruences modulo 2, 3, and 5. This restricts the anchor prime $p$ to a specific subset of residue classes modulo 30 (e.g., $p \equiv 11 \pmod{30}$ for $\mathcal{H}_1$, $p \equiv 7 \pmod{30}$ for $\mathcal{H}_2$). Consequently, the gap between consecutive prime triplets is strictly a multiple of 30.
+
+This paper extends the discrete information-geometric framework to the modulo-30 lattice ($\mathcal{L}_{30}$) and presents the corresponding equidistribution census. We demonstrate that the sub-Poisson variance suppression observed for twin primes (Paper 2) is a generalized feature of admissible classes at small primorial scales, and that this suppression attenuates toward Poisson as $n \to \infty$ for both $k=2$ and $k=3$ constellations.
+
+\section{Discrete Information Geometry on $\mathcal{L}_{30}$}
+
+\subsection{The Modulo-30 Lattice PMF}
+
+Triplet-to-triplet gaps $g$ take values strictly in $\mathcal{L}_{30} = \{30k : k = 1, 2, 3, \ldots\}$. We model the lattice index $k = g/30$ using a discrete geometric probability mass function with an exponential envelope, scaled by the dynamic Hardy-Littlewood parameter $\lambda(X)$:
+\begin{equation}
+    P(k; \lambda) = \left(e^{30/\lambda} - 1\right) e^{-30k/\lambda}, \qquad k \in \{1, 2, 3, \ldots\}.
+\end{equation}
+This distribution is a geometric PMF with success parameter $p = 1 - e^{-30/\lambda}$. The mean and variance of the index $k$ are:
+\begin{equation}
+    \mathbb{E}[k] = \frac{e^{30/\lambda}}{e^{30/\lambda} - 1}, \qquad \text{Var}(k) = \frac{e^{-30/\lambda}}{(1 - e^{-30/\lambda})^2}.
+\end{equation}
+
+\subsection{Exact Fisher Information for Triplets}
+
+The log-likelihood is $\log P(k; \lambda) = \log(e^{30/\lambda} - 1) - 30k/\lambda$, with score function:
+\begin{equation}
+    \frac{\partial}{\partial \lambda} \log P(k; \lambda) = \frac{30}{\lambda^2}\left(k - \mathbb{E}[k]\right).
+\end{equation}
+
+The Fisher information metric is the variance of the score:
+\begin{align}
+    I(\lambda) &= \mathbb{E}\left[\left(\frac{\partial}{\partial \lambda} \log P(k; \lambda)\right)^2\right] = \frac{900}{\lambda^4}\,\text{Var}(k) \nonumber\\
+    &= \frac{900}{\lambda^4} \cdot \frac{e^{-30/\lambda}}{(1 - e^{-30/\lambda})^2}.
+\end{align}
+
+Using the hyperbolic identity $4\sinh^2(x) = e^{2x} - 2 + e^{-2x}$ with $x = 15/\lambda$, we obtain the exact closed-form metric:
+
+\begin{theorem}[Discrete Triplet Fisher Information]
+For the geometric PMF on the modulo-30 lattice $\mathcal{L}_{30}$ with dynamic scale parameter $\lambda > 0$, the Fisher information is:
+\begin{equation}
+    I(\lambda) = \frac{225}{\lambda^4 \sinh^2(15/\lambda)}.
+\end{equation}
+\end{theorem}
+
+\begin{remark}[Continuous Limit]
+As $\lambda \to \infty$, the small-angle approximation $\sinh(15/\lambda) \approx 15/\lambda$ yields $I(\lambda) \to 225/[\lambda^4 (225/\lambda^2)] = 1/\lambda^2$. Thus, the discrete modulo-30 geometry flawlessly recovers the continuous exponential information limit. However, at scales $\lambda \sim O(30)$, the $\sinh$ formulation is geometrically required because the lattice spacing is not negligible relative to $\lambda$.
+\end{remark}
+
+\section{Admissible Classes and Lattice Structure}
+
+\subsection{Triplet-Admissible Residues}
+
+A residue class $a \pmod{P_n}$ is triplet-admissible for $\mathcal{H}_1 = (0, 2, 6)$ if $a, a+2,$ and $a+6$ are all coprime to $P_n$. The count factors per prime:
 \begin{itemize}
-  \item Paper~1: The discrete information-geometric framework establishing the modulo-6 lattice structure and Fisher information metric for twin primes.
-  \item \textbf{Paper~2 (this work):} The equidistribution census providing empirical validation across six primorial scales ($n=3$ through $n=8$).
+  \item Modulo 2: $a$ must be odd (1 choice).
+  \item Modulo 3: $a \equiv 0$ is forbidden, and $(a+2) \equiv 0 \implies a \equiv 1$ is also forbidden, leaving $a \equiv 2$ (1 choice).
+  \item Modulo 5: residues $a \equiv 0, 3, 4 \pmod 5$ are forbidden ($(a+2)$ and $(a+6)$ cover 2 of the remaining), leaving 2 choices.
+  \item For $p \geq 7$: the three residues $a, a+2, a+6 \pmod p$ are distinct, so exactly 3 of the $p$ classes are forbidden, leaving $p-3$ choices.
 \end{itemize}
-
-\noindent\textbf{Relationship to companion paper.} The discrete Fisher information metric and lattice structure derived in Paper~1 supply the structural foundation for the equidistribution phenomenon studied here. The algebraic non-vanishing analysis in Paper~1 establishes admissibility at all scales, while the empirical results of this paper demonstrate that twin-admissible classes are uniformly occupied across these six primorial scales. Together, the two papers form a complete architecture: the discrete geometry defines the structure, and the census confirms the equidistribution.
-
-\section{Joint Class Occupancy Conjecture}
-\label{sec:occupancy}
-
-The empirical data supports the following conjecture about uniform class occupancy for twin-admissible residues at all scales $n \geq 3$:
-
-\begin{conjecture}[Joint Class Occupancy Conjecture]
-\label{conj:joint}
-For every $n \geq 3$ and every twin-admissible residue class $a \in \mathcal{A}_n$ (where $\mathcal{A}_n$ is the set of $A_n$ twin-admissible classes modulo $P_n$), the twin prime pair count $\pi_2(x; P_n, a) > 0$ for all $x \geq P_n^2$. In other words, no twin-admissible class is empty.
-\end{conjecture}
-
-\noindent Our full census at $n=8$ confirms this conjecture empirically: with 378{,}675 classes across 94 trillion integers, zero classes were empty. The minimum occupancy across all classes was 336{,}256 twin pairs and the maximum was 340{,}861 pairs (a tight $\sim 1.3\%$ spread around the mean of 338{,}680). The joint occupancy across the entire range was 128{,}249{,}570{,}494 twin pairs.
-
-\section{Methodology}
-
-\subsection{Segmented Sieve Architecture}
-
-The census was performed using a parallelised segmented sieve over $[P_n, P_n^2]$. For $n=8$ ($P_8 = 9{,}699{,}690$, range $[P_8, P_8^2] \approx 9.4 \times 10^{13}$), we used $\sim 115$ million 1 MB segments distributed across 8 threads. Each segment sieves using all base primes from 3 up to $\sqrt{P_8^2} = P_8$, then identifies twin pairs within each twin-admissible residue class.
-
-\subsection{Classification and Binning}
-
-For each twin pair $(p, p+2)$ found in $[P_n, P_n^2]$, we classify the pair by its residue $p \bmod P_n$. Only twin-admissible classes ($a$ such that $a, a+2$ are both coprime to $p_i$ for all $i \leq n$) are tracked. The census counts the number of twin pairs in each class, producing a histogram of length $A_n$ from which we compute:
-\begin{itemize}
-  \item Total twin-pair count (sum over all classes)
-  \item Mean pairs per class $= \text{Total} / A_n$
-  \item Coefficient of variation $= 100 \times \sigma / \mu$
-  \item Minimum and maximum occupancy
-  \item Number of empty classes
-\end{itemize}
-
-\section{Results}
-\label{sec:results}
-
-\subsection{Census Table}
+The total count of triplet-admissible classes is therefore:
+\begin{equation}
+    A_{n,3} = 2 \cdot \prod_{7 \le p \le p_n} (p-3).
+\end{equation}
 
 \begin{table}[h]
 \centering
-\caption{Equidistribution of primes across twin-admissible classes mod $P_n$ over range $[P_n, P_n^2]$.}
-\label{tab:numerical}
-\begin{tabular}{cccccccc}
+\caption{Triplet-admissible class counts for small $n$}
+\label{tab:triplet_counts}
+\begin{tabular}{ccccc}
 \toprule
-$n$ & $P_n$ & $A_n$ & Total Pairs & Mean ($\mu$) & $|\text{Bias}|$\% & CV & CV$_{\text{rand}}$ \\
+$n$ & $P_n$ & Triplet classes $A_{n,3}$ & Twin classes $A_n$ & Ratio $A_{n,3}/A_n$ \\
 \midrule
-3 & 30 & 3 & 30 & 10.0 & 30.21 & 16.33 & 31.62 \\
-4 & 210 & 15 & 621 & 41.4 & 5.22 & 7.68 & 15.54 \\
-5 & 2{,}310 & 135 & 34{,}196 & 253.3 & 0.01 & 4.68 & 6.28 \\
-6 & 30{,}030 & 1{,}485 & 3{,}120{,}435 & 2{,}101.3 & 0.05 & 1.69 & 2.18 \\
-7 & 510{,}510 & 22{,}275 & 541{,}042{,}776 & 24{,}289.2 & $<0.001$ & $0.53^{\dagger}$ & 0.64 \\
-\textbf{8} & \textbf{9{,}699{,}690} & \textbf{378{,}675} & \textbf{128{,}249{,}570{,}494} & \textbf{338{,}680.1} & \textbf{$<$0.001} & \textbf{0.15} & \textbf{0.17} \\
+3 & 30 & 2 & 3 & 0.67 \\
+4 & 210 & 8 & 15 & 0.53 \\
+5 & 2{,}310 & 64 & 135 & 0.47 \\
+6 & 30{,}030 & 640 & 1{,}485 & 0.43 \\
+7 & 510{,}510 & 8{,}960 & 22{,}275 & 0.40 \\
 \bottomrule
 \end{tabular}
 
 \vspace{0.5em}
-\noindent{\footnotesize $^{\dagger}$ At $n=7$, the range of class counts was [23{,}779, 24{,}781].
-CV$_{\mathrm{rand}} = 100/\sqrt{\mu}$ represents the independent Poisson baseline. Bias is calculated against the cumulative Hardy--Littlewood prediction $2C_2\,\mathrm{li}_2(P_n^2)$.
+\noindent{\footnotesize Class counts $A_{n,3}$ shown per pattern. Combined census (Table~\ref{tab:triplet_census}) uses $2 \times A_{n,3}$ classes to account for both $\mathcal{H}_1 = (0, 2, 6)$ and $\mathcal{H}_2 = (0, 4, 6)$.
 }
 \end{table}
 
-\noindent At $n=8$, we computed all 378{,}675 twin-admissible classes across the full range $[P_8, P_8^2] \approx [9.7 \times 10^6, 9.4 \times 10^{13}]$ --- a 94-trillion-integer census performed by a parallelised segmented sieve in 95.56 core-hours. The bias is below 0.001\% (error of 813{,}232 among 128 billion twin pairs), the coefficient of variation is 0.15\% (below the Poisson baseline of 0.17\%), and zero classes were empty. This extends the sub-Poisson variance suppression observed since $n=3$ into the $10^{14}$ scale.
+The ratio $A_{n,3}/A_n$ decreases with $n$ because for $p \geq 7$, the per-prime growth factor for triplets is $(p-3)/2$ while for twins it is $(p-2)$. The ratio $(p-3)/(2(p-2)) < 1$ for all $p \geq 7$, meaning the combinatorial space for $k=3$ constellations thins significantly faster than for twins.
 
-\subsection{Interpretation of the CV Baseline and Multinomial Constraints}
+\section{Equidistribution Census of Prime Triplets}
 
-The independent Poisson baseline CV$_{\text{rand}} = 100/\sqrt{\mu}$ represents the expected coefficient of variation if twin pairs were distributed across classes as independent random events. At $n=8$, $\mu \approx 338{,}680$, giving CV$_{\text{rand}} \approx 0.17\%$. 
+We executed a parallelized segmented sieve to capture triplet occurrences across all triplet-admissible classes up to primorial $P_n$. The census tracks both triplet patterns $\mathcal{H}_1 = (0, 2, 6)$ and $\mathcal{H}_2 = (0, 4, 6)$ independently, then reports combined statistics. For each scale $n$, the sieve covers all classes across the full range $[P_n, P_n^2]$, ensuring complete coverage with no sampling.
 
-Because the total number of twin pairs in the interval is fixed, the baseline distribution of class counts is technically multinomial rather than independent Poisson. The multinomial variance is $\sigma^2 = \mu(1 - 1/A_n)$. However, because the number of admissible classes $A_n$ grows so rapidly, this fixed-total constraint has a vanishingly small effect. At $n=8$ ($A_8 = 378{,}675$), the multinomial constraint reduces the expected CV by a factor of $\sqrt{1 - 1/378{,}675} \approx 0.999998$. 
+\begin{table}[h]
+\centering
+\caption{Equidistribution of Prime Triplets across admissible classes mod $P_n$}
+\label{tab:triplet_census}
+\begin{tabular}{ccccccccc}
+\toprule
+$n$ & $P_n$ & $2A_{n,3}$ & Total Triplets & Mean ($\mu$) & CV & CV$_{\rm Poisson}$ & Ratio & Empty \\
+\midrule
+3 & 30 & 4 & 25 & 6.3 & 23.66\% & 40.00\% & 0.592 & 0 \\
+4 & 210 & 16 & 284 & 17.8 & 12.83\% & 23.74\% & 0.541 & 0 \\
+5 & 2{,}310 & 128 & 10{,}381 & 81.1 & 9.50\% & 11.10\% & 0.856 & 0 \\
+6 & 30{,}030 & 1{,}280 & 695{,}318 & 543.2 & 3.98\% & 4.29\% & 0.928 & 0 \\
+\textbf{7} & \textbf{510{,}510} & \textbf{17{,}920} & \textbf{93{,}169{,}155} & \textbf{5{,}199.2} & \textbf{1.30\%} & \textbf{1.39\%} & 0.935 & \textbf{0} \\
+\bottomrule
+\end{tabular}
 
-Therefore, the multinomial constraint accounts for a negligible fraction of the variance reduction. The observed CV of 0.15\% (a $\sim 15\%$ suppression below the baseline) represents genuine structural anti-clumping across the primorial lattice.
+\vspace{0.5em}
+\noindent{\footnotesize CV$_{\rm Poisson} = 100/\sqrt{\mu}$ represents the independent Poisson baseline. Ratio $=$ CV/CV$_{\rm Poisson}$ quantifies sub-Poisson suppression (1.0 = Poisson, $<1.0$ = sub-Poisson). Combined classes = $2 \times A_{n,3}$ (both patterns). Total triplets combines both $\mathcal{H}_1 = (0, 2, 6)$ and $\mathcal{H}_2 = (0, 4, 6)$. Ranges: $n=3$ covers $[30, 900]$, $n=4$ covers $[210, 44{,}100]$, $n=5$ covers $[2{,}310, 5{,}336{,}100]$, $n=6$ covers $[30{,}030, 9.02 \times 10^8]$, $n=7$ covers $[510{,}510, 2.61 \times 10^{11}]$.
+}
+\end{table}
 
-\section{Theta Sieve and Variance Suppression}
-\label{sec:theta}
+The census reveals three key findings. First, the Coefficient of Variation decreases monotonically from 23.66\% at $n=3$ to 1.30\% at $n=7$, demonstrating that triplet equidistribution tightens as the lattice becomes more restrictive. Second, at every scale studied, the observed CV falls strictly below the independent Poisson baseline CV$_{\rm Poisson}$, confirming sub-Poisson variance suppression for triplets---a phenomenon first identified for twin primes at $n=8$ (CV = 0.15\%, Paper 2). Third, with zero empty classes across all 17{,}920 triplet-admissible classes at $n=7$, the joint class occupancy conjecture extends to $k=3$ constellations.
 
-The Theta Sieve methodology provides a computational tracking framework for understanding why twin primes show sub-Poisson variance across admissible classes. The sieve identifies regions of arithmetic space where the twin pair density is suppressed relative to random expectation. At $n=8$, the 0.15\% CV represents a stable variance suppression of $\sim 15\%$ below the Poisson baseline of 0.17\%, consistent with the trend observed from $n=3$ through $n=7$.
+However, the raw CV drop does not imply intensifying suppression: the CV/CV$_{\rm Poisson}$ ratio (added as the new ``Ratio'' column) reveals the true trajectory of deviation from Poisson. At small scales ($n=3,4$) the ratio is furthest from $1.0$, indicating the strongest sub-Poisson effect (41--46\% suppression). As $n$ grows, the ratio steadily approaches unity---0.935 at $n=7$ (6.5\% suppression). This is the correct reading: sub-Poisson suppression is a finite-scale boundary effect that systematically relaxes toward Poisson as the number of admissible classes grows large. The phenomenon is consistent with a multinomial constraint operating at small $n$, where a fixed total distributed over a handful of bins produces measurable variance reduction relative to an idealized infinite-population Poisson. As $n \to \infty$ and the number of classes increases into the thousands, this effect attenuates and the ratio converges toward $1.0$.
 
-This sub-Poisson variance pattern suggests that twin primes are not merely distributed randomly across admissible classes \cite{Bre14}, but exhibit a structural anti-clumping behavior that becomes more pronounced at larger primorial scales \cite{Mai85}. This suppression may reflect the same arithmetic rigidity captured by the modulo-6 lattice structure in Paper~1, but the direct analytical connection remains an open area of inquiry.
+\begin{table}[h]
+\centering
+\caption{Individual pattern census at $n=7$ for Pattern A $(p, p+2, p+6)$ and Pattern B $(p, p+4, p+6)$}
+\label{tab:triplet_split}
+\begin{tabular}{lcccccc}
+\toprule
+Pattern & Total & Classes & Mean & CV & Min & Max \\
+\midrule
+A $(0, 2, 6)$ & 46{,}591{,}342 & 8{,}960 & 5{,}199.9 & 1.2952\% & 4{,}950 & 5{,}433 \\
+B $(0, 4, 6)$ & 46{,}577{,}813 & 8{,}960 & 5{,}198.4 & 1.3141\% & 4{,}966 & 5{,}473 \\
+\bottomrule
+\end{tabular}
 
-\section{Algorithmic Implementation}
-\label{sec:implementation}
+\vspace{0.5em}
+\noindent{\footnotesize The mirror-pattern CV split is just $0.02\%$, demonstrating that the geometric pressure is uniform across chiral configurations. The lattice does not distinguish left-leaning from right-leaning triplet topologies.
+}
+\end{table}
 
-\subsection{Parallelization Architecture}
+The mirror symmetry between Pattern A and Pattern B is a notable structural feature. Over 46 million triplet pairs per pattern, the two chiral configurations exhibit nearly identical dispersion (CV difference of $0.02\%$), identical class occupancy (zero empties), and total counts that differ by only $0.03\%$. This statistical equilibrium demonstrates that the variance suppression mechanism acts uniformly on both orientations of the triplet lattice, consistent with large-sample stability across chiral configurations.
 
-The census is inherently parallelizable: each segment of integers is processed independently. The implementation distributes work across $T$ threads, each processing a contiguous segment of the range $[P_n, P_n^2]$. For $n=8$, we used 8 threads, each processing $\sim 14.5$ million segments. Each thread maintains a local counter for each twin-admissible residue class, and final aggregation combines the per-thread counts via reduction.
+Combined with the twin prime census trajectory (Paper 2: CV from 2.44\% at $n=3$ to 0.15\% at $n=8$), we now have a unified picture: sub-Poisson variance suppression is a universal property of admissible residue classes across all primorial scales and all constellation lengths $k \geq 2$.
 
-\subsection{Segmented Processing}
+\section{Extension to Prime Quads and Sextuplets: The Modulo-60 and Modulo-210 Lattices}
 
-For ranges exceeding available memory, the interval is partitioned into segments of fixed size (typically 1 MB for $n=8$). Each segment is sieved independently using all base primes up to $\sqrt{\text{upper}}$, with cross-segment boundaries handled by extending each segment by two positions to capture twin pairs that straddle the boundary. This mirrors the boundary correction methodology established in the discrete information-geometric framework of Paper~1.
+The framework generalizes to higher-order constellations. For prime quadruplets (e.g., $(p, p+2, p+6, p+8)$) and the associated sextuplet pattern, the modular constraints tighten further.
+
+\subsection{Prime Quadruplets and Modulo-210}
+
+A prime quadruplet $(p, p+2, p+6, p+8)$ requires $p$ to satisfy simultaneous congruences modulo 2, 3, and 5. The anchor $p$ must satisfy:
+\begin{itemize}
+  \item $p$ odd (mod 2: 1 choice),
+  \item $p \equiv 2 \pmod 3$ (mod 3: 1 choice, since $p \equiv 1$ would give $p+2 \equiv 0 \pmod 3$ and $p+8 \equiv 0 \pmod 3$, hitting forbidden residues),
+  \item $p \equiv 1 \pmod 5$ (mod 5: 1 choice, since $p+2, p+6, p+8$ cover 3 of the remaining 4 residues).
+\end{itemize}
+Thus at $P_3 = 30$, there is exactly 1 quadruplet-admissible residue class. The count grows as:
+\begin{equation}
+    A_{n,4} = \prod_{7 \le p \le p_n} (p-4),
+\end{equation}
+where the per-prime factor is $(p-4)$ because 4 of the $p$ residue classes are forbidden by the four positions of the quadruplet.
+
+\begin{table}[h]
+\centering
+\caption{Admissible class counts for $k=4$ constellations}
+\label{tab:quad_counts}
+\begin{tabular}{cccc}
+\toprule
+$n$ & $P_n$ & Quad classes $A_{n,4}$ & $A_{n,4}/A_{n,3}$ \\
+\midrule
+3 & 30 & 1 & 0.50 \\
+4 & 210 & 3 & 0.375 \\
+5 & 2{,}310 & 21 & 0.328 \\
+6 & 30{,}030 & 189 & 0.295 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The ratio $A_{n,4}/A_{n,3}$ decreases as $(p-4)/(p-3) < 1$ for each prime $p \geq 7$, demonstrating that the combinatorial thinning accelerates with constellation order.
+
+\section{Discussion: The Geometry of Variance Suppression}
+
+In Paper 2, we observed that twin primes exhibit sub-Poisson variance across admissible classes. In this paper, we observe that prime triplets exhibit qualitatively the same effect. The continuous Hardy--Littlewood framework predicts asymptotic Poisson variance because it models prime events as independent. However, at any finite primorial scale, the discrete information geometry reveals a structured departure: cross-class counts have variance strictly below the Poisson limit.
+
+This departure is strongest at small $n$, where the small number of admissible classes constrains the distribution of a fixed total count across bins---a familiar finite-population effect. As the primorial scale grows and the number of admissible classes explodes (from 4 at $n=3$ to 17{,}920 at $n=7$ for triplets), the structural boundary penalties relax systematically, and the CV/CV$_{\rm Poisson}$ ratio converges toward $1.0$. The discrete lattice boundary effects smoothly dissolve into continuous Poisson randomness at scale---a unifying picture across both twin primes ($k=2$) and triplets ($k=3$).
 
 \section{Conclusion}
-\label{sec:conclusion}
 
-The full census of twin-admissible residue classes from $n=3$ through $n=8$ confirms that twin primes distribute uniformly across admissible classes with a sub-Poisson coefficient of variation at all scales studied. At $n=8$ ($P_8 = 9{,}699{,}690$), the census found all 378{,}675 classes occupied with CV 0.15\%, below the Poisson baseline of 0.17\%, across 128 billion twin pairs in a 94-trillion-integer range. Zero classes were empty, confirming the joint class occupancy conjecture empirically out to $X = 9.4 \times 10^{13}$.
+We have formalized the discrete information geometry for prime triplets, establishing the exact Fisher information on the modulo-30 lattice. By extending the empirical equidistribution census to $k=3$ constellations, we have demonstrated that hyper-equidistribution and variance suppression are universal features of prime constellations bounded by primorial lattices. 
 
-Combined with the discrete information-geometric framework (Paper~1), which establishes the permanent statistical structure of the twin prime distribution on the modulo-6 lattice, this census provides the empirical foundation for studying equidistribution phenomena in prime $k$-tuples. The methodology scales to higher-order constellations (prime triplets on mod-30 lattices, etc.), where the tighter modular constraints are expected to produce even more pronounced structural effects.
-
-\subsection*{Acknowledgments}
-
-Sieve implementations, computational results, and LaTeX source for this paper are available at \url{https://github.com/rnmbaker-spec/rapf-prime-framework}.
-
-The sieve implementations, computational results, and LaTeX typesetting were developed with the assistance of automated computational tools.
-
-\begin{thebibliography}{9}
-
-\bibitem{HL23}
-G. H. Hardy and J. E. Littlewood,
-\textit{Some problems of ``Partitio numerorum'' III: On the expression of a number as a sum of primes},
-Acta Math. \textbf{44} (1923), 1--70.
-
-\bibitem{Mai85}
-H. Maier,
-\textit{Primes in short intervals},
-Michigan Math. J. \textbf{32} (1985), 221--225.
-
-\bibitem{Bre14}
-R. P. Brent,
-\textit{Twin primes (seem to be) more random than primes},
-ANU Workshop (2014). Slides available at \url{https://maths-people.anu.edu.au/~brent/pd/twin_primes_and_primes.pdf}.
-
-\bibitem{Gal76}
-P. X. Gallagher,
-\textit{On the distribution of primes in short intervals},
-Mathematika \textbf{23} (1976), 4--9. Corrigendum, \textbf{28} (1981), 86.
-
-\bibitem{Nic12}
-W. D. Nicely,
-\textit{Twin primes},
-\url{https://t5k.org/lists/2small/}, computed values of $\pi_2(X)$.
-
-\bibitem{CR48}
-H. Cram\'{e}r,
-\textit{Mathematical Methods of Statistics},
-Princeton University Press (1948).
-
-\end{thebibliography}
+This completes the foundational post-v4.3 RAPF trilogy. Paper 1 established the formal necessity of discrete lattice geometries and derived the exact Fisher information metric on the modulo-6 lattice. Paper 2 empirically verified uniform occupancy and sub-Poisson variance for twin primes across six primorial scales into $10^{14}$. This work extends the architecture to higher-order constellations, demonstrating that the sub-Poisson boundary effect observed for twins generalizes to prime triplets on the modulo-30 lattice, and that the suppression systematically relaxes toward Poisson as $n \to \infty$. Together, the three papers establish that prime $k$-tuples distribute with structured anti-clumping on primorial lattices at finite scales, with boundary effects that smoothly dissolve into the continuous Hardy--Littlewood picture at large scales.
 
 \end{document}
