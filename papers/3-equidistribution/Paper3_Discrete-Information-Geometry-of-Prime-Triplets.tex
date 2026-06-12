@@ -37,6 +37,8 @@ This paper extends the discrete information-geometric framework to the modulo-30
 
 \section{Discrete Information Geometry on $\mathcal{L}_{30}$}
 
+\noindent\textbf{Remark.} We emphasize that the derived Fisher information metric is exact with respect to the idealized geometric PMF envelope. While the discrete manifold robustly captures macroscopic scaling and second-moment variance suppression across primorial lattices, it functions as a structural model that averages over localized, fine-grained arithmetic fluctuations (e.g.\ mod-30 and mod-210 filtering effects) visible at the level of individual gap distributions.
+
 \subsection{The Modulo-30 Lattice PMF}
 
 Triplet-to-triplet gaps $g$ take values strictly in $\mathcal{L}_{30} = \{30k : k = 1, 2, 3, \ldots\}$. We model the lattice index $k = g/30$ using a discrete geometric probability mass function with an exponential envelope, scaled by the dynamic Hardy-Littlewood parameter $\lambda(X)$:
@@ -134,7 +136,7 @@ $n$ & $P_n$ & $2A_{n,3}$ & Total Triplets & Mean ($\mu$) & CV & CV$_{\rm Poisson
 \end{tabular}
 
 \vspace{0.5em}
-\noindent{\footnotesize CV$_{\rm Poisson} = 100/\sqrt{\mu}$ represents the independent Poisson baseline. Ratio $=$ CV/CV$_{\rm Poisson}$ quantifies sub-Poisson suppression (1.0 = Poisson, $<1.0$ = sub-Poisson). Combined classes = $2 \times A_{n,3}$ (both patterns). Total triplets combines both $\mathcal{H}_1 = (0, 2, 6)$ and $\mathcal{H}_2 = (0, 4, 6)$. Ranges: $n=3$ covers $[30, 900]$, $n=4$ covers $[210, 44{,}100]$, $n=5$ covers $[2{,}310, 5{,}336{,}100]$, $n=6$ covers $[30{,}030, 9.02 \times 10^8]$, $n=7$ covers $[510{,}510, 2.61 \times 10^{11}]$.
+\noindent{\footnotesize CV$_{\rm Poisson} = 100/\sqrt{\mu}$ represents the independent Poisson baseline. Ratio $=$ CV/CV$_{\rm Poisson}$ quantifies sub-Poisson suppression (1.0 = Poisson, $<1.0$ = sub-Poisson). Combined classes = $2 \times A_{n,3}$ (both patterns). Total triplets combines both $\mathcal{H}_1 = (0, 2, 6)$ and $\mathcal{H}_2 = (0, 4, 6)$. Counts strictly reflect prime constellations whose anchor prime $p > p_n$, excluding small local constellations below the primorial modulus baseline. Ranges: $n=3$ covers $[30, 900]$, $n=4$ covers $[210, 44{,}100]$, $n=5$ covers $[2{,}310, 5{,}336{,}100]$, $n=6$ covers $[30{,}030, 9.02 \times 10^8]$, $n=7$ covers $[510{,}510, 2.61 \times 10^{11}]$.
 }
 \end{table}
 

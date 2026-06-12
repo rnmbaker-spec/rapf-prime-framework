@@ -92,11 +92,13 @@ The derivation of $\lambda \approx 3.70$ from the entropy functional $S(r)$ trea
 
 \subsection{Fisher Conditioning Error}
 The Fisher information derivation claimed that conditioning on admissible classes scales $g \to 1/(C_2\lambda^2)$. The correct Poisson thinning analysis shows that multiplying event density by $C_2 < 1$ increases the mean gap ($\lambda \to \lambda/C_2$) and correspondingly decreases the Fisher information. The ``information surplus'' was an artifact of a sign error in the scaling direction.
-
 \section{The Reconstruction: Discrete Information Geometry on the 6-Lattice}
 Having identified all failure modes, we construct a corrected model from first principles.
 
+\noindent\textbf{Remark.} We emphasize that the derived Fisher information metric is exact with respect to the idealized geometric PMF envelope. While the discrete manifold robustly captures macroscopic scaling and second-moment variance suppression across primorial lattices, it functions as a structural model that averages over localized, fine-grained arithmetic fluctuations (e.g.\ mod-30 and mod-210 filtering effects) visible at the level of individual gap distributions.
+
 \subsection{The Modulo-6 Lattice PMF}
+
 Twin-to-twin gaps $g$ take values in $\mathcal{L}_6 = \{6k : k = 1, 2, 3, \ldots\}$. We model the lattice index $k$ with a geometric distribution having an exponential envelope:
 \begin{equation}
     P(k; \lambda) = \left(e^{6/\lambda} - 1\right) e^{-6k/\lambda}, \qquad k \in \{1, 2, 3, \ldots\}.
