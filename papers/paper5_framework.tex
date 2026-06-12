@@ -1,0 +1,152 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath, amssymb, amsthm, geometry, bm, booktabs}
+\usepackage[hidelinks]{hyperref}
+\geometry{margin=1in}
+
+\title{Pair Correlation and Spectral Correspondence in Primorial Lattices:\\
+Toward a Geometric Bridge Between Discrete Gap Statistics and the Riemann Zeta Zeros}
+\author{Rob Miller}
+\date{\today}
+
+% RAPF Paper 5 — the spectral bridge paper
+% Framework by Rob Miller. LaTeX scaffold by Rebecca/Hermes.
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Building on the unified structural framework established in Papers~1--4,
+this paper initiates the spectral bridge between the discrete information
+geometry of primorial lattices and the analytic theory of the Riemann
+zeta function. We pursue three parallel objectives:
+\begin{enumerate}
+    \item \textbf{Empirical pair correlation:} Extract normalized gap
+    statistics from the twin and triplet census datasets (Papers~2 and~3)
+    and compare against the Montgomery--Bogomolny--Keating GUE pair
+    correlation model.
+    \item \textbf{Explicit formula bounds:} Relate short-interval prime
+    $k$-tuple counts in primorial ranges to sums over zeta zeros via the
+    von Mangoldt explicit formula, using the discrete Taylor penalties
+    from Paper~4 to bound the error contributions.
+    \item \textbf{RG fixed-point analysis:} Strengthen the heuristic
+    evidence for the $1/\sinh^2$ fixed-point conjecture with leading-order
+    error bounds under the logarithmic primorial flow.
+\end{enumerate}
+This paper represents a shift from phenomenological framework-building
+to testable, predictive spectral analysis. The computational results
+provide new empirical evidence that the primorial lattice repulsion
+exhibits the same structural uniformity found in the zero-spacing
+statistics of the Riemann zeta function.
+\end{abstract}
+
+\noindent \textbf{MSC 2020:} 11N05, 11M26, 58J50
+
+%================================================================================
+\section{Introduction}
+%================================================================================
+% TODO:
+% - Recap of Papers 1-4: discrete Fisher metric, census, non-collapse, Taylor
+% - The gap in the architecture: from finite-scale structure to zeta zeros
+% - Montgomery's pair correlation (1973) and the GUE connection
+% - What this paper does: empirical pair-correlation + explicit formula bounds + RG bounds
+% - Scope: this is a bridge paper, not a proof of RH or TPC
+
+%================================================================================
+\section{Pair Correlation on Primorial Lattices}
+%================================================================================
+
+\subsection{Normalization of Gap Data}
+% TODO: Normalizing gap sequences for comparison with GUE/RMT predictions
+
+\subsection{Empirical Pair-Correlation Function}
+% TODO: Streaming histogram algorithm for n=8 twins / n=7 triplets
+% TODO: Plot against 1 - (sin(pi u) / (pi u))^2
+
+\subsection{Comparison to Montgomery's GUE Model}
+% TODO: Quantitative comparison — KS distance, chi-squared, etc.
+
+%================================================================================
+\section{The Explicit Formula Bridge}
+%================================================================================
+
+\subsection{The Riemann--von Mangoldt Explicit Formula}
+% TODO: Standard explicit formula relating psi(x) to zeros
+
+\subsection{Bounding Error Terms via Taylor Penalties}
+% TODO: How the discrete penalties from Paper 4 bound the zero contributions
+
+\subsection{Implications for Zero-Free Regions}
+% TODO: Connection between non-collapse and controlled zero-free regions
+
+%================================================================================
+\section{Leading-Order Bounds on the RG Fixed-Point}
+%================================================================================
+
+\subsection{Partial Analysis of the O(log p_{n+1}/log P_n) Error}
+% TODO: Rigorous leading-order error bounds
+
+\subsection{Trapping the Deviations}
+% TODO: Geometric dampening field for Taylor penalty deviations
+
+%================================================================================
+\section{Predictive Statistics at Higher Scales}
+%================================================================================
+
+\subsection{Maier-Modulated PMF Fit}
+% TODO: Fitting M(k) modulation function to census data
+
+\subsection{Prediction for n=9 Twin CV}
+% TODO: Hard-coded prediction with error bars
+
+%================================================================================
+\section{Discussion}
+%================================================================================
+% TODO: What the empirical and theoretical results mean together
+% TODO: Honest assessment of what is proven vs. suggested
+
+%================================================================================
+\section{Conclusion}
+%================================================================================
+% TODO: Summary of findings, open problems, next steps
+
+%================================================================================
+\begin{thebibliography}{99}
+
+\bibitem{montgomery}
+H. L. Montgomery, \emph{The pair correlation of zeros of the zeta function},
+Proc. Sympos. Pure Math. \textbf{24} (1973), 181--193.
+
+\bibitem{BK96}
+E. B. Bogomolny and J. P. Keating, \emph{Gutzwiller's trace formula and the
+statistical properties of the Riemann zeta function}, Nonlinearity \textbf{9}
+(1996), 911--935.
+
+\bibitem{paper1}
+R. Miller, \emph{From Continuous Geometry to Discrete Lattices: An Empirical
+Anatomy of Failed and Corrected Information-Geometric Models of Twin Primes},
+Paper 1, 2026.
+
+\bibitem{paper2}
+R. Miller, \emph{Equidistribution of Twin Primes Across Admissible Residue
+Classes: A Computational Census from $n=3$ through $n=8$}, Paper 2, 2026.
+
+\bibitem{paper3}
+R. Miller, \emph{Discrete Information Geometry of Prime Triplets: The
+Modulo-30 Arithmetic Lattice and Variance Suppression}, Paper 3, 2026.
+
+\bibitem{paper4}
+R. Miller, \emph{A Unified Structural Framework of Prime Constellations:
+Induction, Renormalization Flow, and Information Non-Collapse}, Paper 4, 2026.
+
+\end{thebibliography}
+
+\end{document}
